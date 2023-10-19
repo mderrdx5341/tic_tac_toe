@@ -1,0 +1,2 @@
+(()=>{"use strict";window.onload=()=>new class{constructor(o){this._selector=o}run(){this._container=document.querySelector(this._selector),console.log(this._container)}}("#app").run()})();
+//# sourceMappingURL=app.js.map
