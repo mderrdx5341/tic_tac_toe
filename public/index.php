@@ -1,3 +1,8 @@
+<?php
+include "../autoload.php";
+$app = new \Core\App();
+$app->run();
+/*
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -10,3 +15,4 @@
         </div>
     </body>
 </html>
+*/

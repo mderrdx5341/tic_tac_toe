@@ -1,3 +1,6 @@
+import { Mediator } from './Mediator';
+
+
 class App
 {
     private _selector: string;
@@ -7,11 +10,23 @@ class App
         this._selector = selector;
     }
     
-    run(): void
+    async run()
     {
         this._container = document.querySelector(this._selector);
-		console.log(this._container);
+
+        let mediator = new Mediator(this._container);
+        mediator.handleEvent('start')
+
+
+
+        //console.log(usersRepository);
+
+
+
+
+
     }
 }
+
 
 export default App;

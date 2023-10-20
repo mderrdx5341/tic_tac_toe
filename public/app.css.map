@@ -1,1 +1,1 @@
-{"version":3,"file":"app.css","mappings":"AAAA,KACC,YACG,UACI,gBACN,Y","sources":["webpack://arena/./frontend/App.scss"],"sourcesContent":["html {\n\theight: 100%;\n    body {\n        background: #000;\n\t\theight: 100%;\n    }\n}"],"names":[],"sourceRoot":""}
+{"version":3,"file":"app.css","mappings":"AAAA,KACC,YACG,UAEF,Y","sources":["webpack://arena/./frontend/App.scss"],"sourcesContent":["html {\n\theight: 100%;\n    body {\n        // background: #000;\n\t\theight: 100%;\n    }\n}"],"names":[],"sourceRoot":""}

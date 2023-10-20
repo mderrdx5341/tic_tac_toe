@@ -1,4 +1,4 @@
 import './App.scss';
 import App from './App.ts';
 
-window.onload = () => (new App('#app')).run()
+window.addEventListener('load', () => (new App('#app')).run() );
