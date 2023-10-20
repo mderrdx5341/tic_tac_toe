@@ -15,16 +15,7 @@ class App
         this._container = document.querySelector(this._selector);
 
         let mediator = new Mediator(this._container);
-        mediator.handleEvent('start')
-
-
-
-        //console.log(usersRepository);
-
-
-
-
-
+        mediator.handleEvent('start');
     }
 }
 
