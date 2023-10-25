@@ -1,6 +1,8 @@
 import * as Views from './Views';
 import * as Model from './Model';
 import { WebSocketClient } from './WebSocketClient';
+import { Router } from './Router';
+import * as Controllers from './Controllers';
 
 
 class Mediator
@@ -18,8 +20,8 @@ class Mediator
     public async handleEvent(event: string) {
         if (event === 'start')
         {  
-            let af = new Views.AuthForm(this);
-            this._container.appendChild(af.build());
+            let authForm = new Views.AuthForm(this);
+            this._container.appendChild(authForm.build());
         }
 
         if(event === 'auth')
@@ -27,21 +29,12 @@ class Mediator
             let socket = await WSconnect(this._webSocketAddress);
             this._webSocketClient = new WebSocketClient(this._webSocketAddress, socket, this._player.name());
 			
-			this._webSocketClient.setMessageHandler((e) => {
-				let response = JSON.parse(e.data);
-				//console.log(e.data,  'auth');
-				console.log(response);
-				if (response.ok === true) {
-					this.handleEvent('players');				
-				} else {
-					return;
-				}
-			});
+			this._webSocketClient.setMessageHandler(this.MessageHandler.bind(this));
 			this._webSocketClient.send(`{"controller": "Players", "action": "auth", "data":"${this._player.name()}"}`);
         }
 
 		if (event === 'players') {
-			this._webSocketClient.setMessageHandler((e) => {
+			/*this._webSocketClient.setMessageHandler((e) => {
 				console.log(e.data, 'players');
 				let playersData = JSON.parse(e.data);
 				if (!this.isObject(playersData)) {
@@ -53,23 +46,25 @@ class Mediator
 				}
 				let html = new Views.Players(players);
 				this._container.appendChild(html.build());
-			});
+			});*/
 			this._webSocketClient.send('{"controller": "Players", "action":"getPlayers", "data": ""}');
 		}
     }
 
-	private MessageHandler(e: any){
+	public MessageHandler(e: any): void{
 		let request = JSON.parse(e.data);
-		request.controller;
-		request.args;
-
-		let controller = new request.controller(this);
-		controller.index(request.args);
-		
+		let controller = new Router[request.controller](this, this._webSocketClient);
+		controller[request.action](request.args);
 	}
 
-	private isObject(value: any): boolean {
-		return value !== null && typeof value === 'object';
+	public webSocketClient()
+	{
+		this._webSocketClient;
+	}
+
+	public container(): HTMLElement
+	{
+		return this._container;
 	}
 
 	public setPlayer(player: Model.Player)
@@ -77,6 +72,8 @@ class Mediator
         this._player = player;
     }
 }
+
+type NameController = Controllers.Players | Controllers.Game;
 
 function WSconnect(url: string): Promise<WebSocket>
 {

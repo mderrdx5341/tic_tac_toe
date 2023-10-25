@@ -86,6 +86,11 @@ class PlayersRepository
         return $players;
     }
 
+    public function playersOnline()
+    {
+        return $this->tableOnline;
+    }
+
     public function get($id)
     {
         return $this->table->get($id);

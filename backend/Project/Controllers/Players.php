@@ -19,8 +19,14 @@ class Players
     public function getPlayers()
     {
         $this->webSocketServer->sendMessage(
-            $this->playersRepository->players(),
-            $this->frame
+            [
+                'controller' => 'Players',
+                'action' => 'players',
+                'args' => [
+                    'playersData' => $this->playersRepository->players(),
+                ]
+            ],
+            $this->frame->fd
         );
     }
 
@@ -28,7 +34,6 @@ class Players
     {
         if ($this->playersRepository->isExists($name)) {
             //$this->playersOnline->set($this->frame->$fd,['player' => $name, 'connect'=> $this->frame->fd, 'status' => 'online']);
-
             $this->playersRepository->setOnline(
                 $name,
                 $this->frame->fd
@@ -43,12 +48,26 @@ class Players
                ]
             );
             $this->webSocketServer->sendMessage(
-                ["ok" => true],
-                $this->frame
+                ["controller" => "Players", "action" => "auth", "args" => ["ok" => true]],
+                $this->frame->fd
             );
+            foreach ($this->playersRepository->playersOnline() as  $key => $row)
+            {
+                $this->webSocketServer->sendMessage(
+                    [
+                        'controller' => 'Players',
+                        'action' => 'players',
+                        'args' => [
+                            'playersData' => $this->playersRepository->players(),
+                        ]
+                    ],
+                    (int)$key
+                );
+            }
+
         } else {
             $this->webSocketServer->sendMessage(
-                ["ok" => false],
+                ["controller" => "Players", "action" => "auth", "args" => ["ok" => false]],
                 $this->frame
             );
         }

@@ -1,0 +1,6 @@
+class Game
+{
+
+}
+
+export {Game};

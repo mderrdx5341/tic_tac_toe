@@ -99,9 +99,9 @@ class Server
         $this->server->start();
     }
 
-    public function sendMessage(Array $message, Frame $frame): void
+    public function sendMessage(Array $message, int $fd): void
     {
-        $this->server->push($frame->fd, json_encode($message));
+        $this->server->push($fd, json_encode($message));
     }
 
     public function close($fd)
