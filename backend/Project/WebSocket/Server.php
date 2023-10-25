@@ -107,6 +107,19 @@ class Server
     public function close($fd)
     {
         $this->playersRepository->setOffline($fd);
+        foreach ($this->playersRepository->playersOnline() as  $key => $row)
+        {
+            $this->sendMessage(
+                [
+                    'controller' => 'Players',
+                    'action' => 'players',
+                    'args' => [
+                        'playersData' => $this->playersRepository->players(),
+                    ]
+                ],
+                (int)$key
+            );
+        }
     }
 
     private function buildActionClassName(string $name): string

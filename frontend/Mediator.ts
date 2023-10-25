@@ -73,8 +73,6 @@ class Mediator
     }
 }
 
-type NameController = Controllers.Players | Controllers.Game;
-
 function WSconnect(url: string): Promise<WebSocket>
 {
 	return new Promise(function(resolve, reject) {
