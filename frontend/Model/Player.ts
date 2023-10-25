@@ -13,6 +13,11 @@ class Player
         this._status = status;
     }
 
+    public id(): number
+    {
+        return this._id;
+    }
+
     public name(): string
     {
         return this._name;

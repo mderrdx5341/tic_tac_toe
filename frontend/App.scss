@@ -5,3 +5,16 @@ html {
 		height: 100%;
     }
 }
+
+.status
+{
+    color: black;
+    
+    &--online {
+        color: green;
+    }
+
+    &--offline {
+        color: red;
+    }
+}

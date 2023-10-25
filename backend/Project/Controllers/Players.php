@@ -48,7 +48,7 @@ class Players
                ]
             );
             $this->webSocketServer->sendMessage(
-                ["controller" => "Players", "action" => "auth", "args" => ["ok" => true]],
+                ["controller" => "Players", "action" => "auth", "args" => ["ok" => true, "player" => $this->playersRepository->get($name)]],
                 $this->frame->fd
             );
             foreach ($this->playersRepository->playersOnline() as  $key => $row)

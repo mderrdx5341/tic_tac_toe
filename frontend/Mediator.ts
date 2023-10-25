@@ -2,8 +2,6 @@ import * as Views from './Views';
 import * as Model from './Model';
 import { WebSocketClient } from './WebSocketClient';
 import { Router } from './Router';
-import * as Controllers from './Controllers';
-
 
 class Mediator
 {
@@ -11,42 +9,32 @@ class Mediator
     private _container: HTMLElement;
     private _webSocketAddress: string;
 	private _webSocketClient: WebSocketClient;
+	private _mainPage: Views.MainPage;
 
     constructor(container: HTMLElement){
         this._container = container;
         this._webSocketAddress = this._container.getAttribute('ws-server');
+		this._mainPage = new Views.MainPage(this._container);
+		this._mainPage.build();
     }
 
     public async handleEvent(event: string) {
         if (event === 'start')
         {  
             let authForm = new Views.AuthForm(this);
-            this._container.appendChild(authForm.build());
+            this._mainPage.playerPanel().appendChild(authForm.build());
         }
 
         if(event === 'auth')
         {
             let socket = await WSconnect(this._webSocketAddress);
-            this._webSocketClient = new WebSocketClient(this._webSocketAddress, socket, this._player.name());
+            this._webSocketClient = new WebSocketClient(this._webSocketAddress, socket, this._player.name());			
 			
 			this._webSocketClient.setMessageHandler(this.MessageHandler.bind(this));
 			this._webSocketClient.send(`{"controller": "Players", "action": "auth", "data":"${this._player.name()}"}`);
         }
 
 		if (event === 'players') {
-			/*this._webSocketClient.setMessageHandler((e) => {
-				console.log(e.data, 'players');
-				let playersData = JSON.parse(e.data);
-				if (!this.isObject(playersData)) {
-					return;
-				}
-				let players: Model.Player[] = [];
-				for(let index in playersData) {
-					players.push(new Model.Player(0, playersData[index].name, playersData[index].wins, playersData[index].status));
-				}
-				let html = new Views.Players(players);
-				this._container.appendChild(html.build());
-			});*/
 			this._webSocketClient.send('{"controller": "Players", "action":"getPlayers", "data": ""}');
 		}
     }
@@ -65,6 +53,11 @@ class Mediator
 	public container(): HTMLElement
 	{
 		return this._container;
+	}
+
+	public mainPage(): Views.MainPage
+	{
+		return this._mainPage;
 	}
 
 	public setPlayer(player: Model.Player)
