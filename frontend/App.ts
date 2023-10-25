@@ -16,6 +16,23 @@ class App
 
         let mediator = new Mediator(this._container);
         mediator.handleEvent('start');
+
+        //let c = 'Controller';
+
+        //let co = Object.create(c);
+    }
+}
+
+class Constroller
+{
+    constructor()
+    {
+
+    }
+
+    public print()
+    {
+        console.log('controller');
     }
 }
 

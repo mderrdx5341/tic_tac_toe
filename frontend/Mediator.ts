@@ -1,13 +1,14 @@
 import * as Views from './Views';
-import { Player } from './Model/Player';
+import * as Model from './Model';
 import { WebSocketClient } from './WebSocketClient';
 
 
 class Mediator
 {
-    private _player: Player;
+    private _player: Model.Player;
     private _container: HTMLElement;
     private _webSocketAddress: string;
+	private _webSocketClient: WebSocketClient;
 
     constructor(container: HTMLElement){
         this._container = container;
@@ -24,13 +25,54 @@ class Mediator
         if(event === 'auth')
         {
             let socket = await WSconnect(this._webSocketAddress);
-            let a = new WebSocketClient(this._webSocketAddress, socket, this._player.name());
-            a.send('message');
-
+            this._webSocketClient = new WebSocketClient(this._webSocketAddress, socket, this._player.name());
+			
+			this._webSocketClient.setMessageHandler((e) => {
+				let response = JSON.parse(e.data);
+				//console.log(e.data,  'auth');
+				console.log(response);
+				if (response.ok === true) {
+					this.handleEvent('players');				
+				} else {
+					return;
+				}
+			});
+			this._webSocketClient.send(`{"controller": "Players", "action": "auth", "data":"${this._player.name()}"}`);
         }
+
+		if (event === 'players') {
+			this._webSocketClient.setMessageHandler((e) => {
+				console.log(e.data, 'players');
+				let playersData = JSON.parse(e.data);
+				if (!this.isObject(playersData)) {
+					return;
+				}
+				let players: Model.Player[] = [];
+				for(let index in playersData) {
+					players.push(new Model.Player(0, playersData[index].name, playersData[index].wins, playersData[index].status));
+				}
+				let html = new Views.Players(players);
+				this._container.appendChild(html.build());
+			});
+			this._webSocketClient.send('{"controller": "Players", "action":"getPlayers", "data": ""}');
+		}
     }
 
-    public setPlayer(player: Player)
+	private MessageHandler(e: any){
+		let request = JSON.parse(e.data);
+		request.controller;
+		request.args;
+
+		let controller = new request.controller(this);
+		controller.index(request.args);
+		
+	}
+
+	private isObject(value: any): boolean {
+		return value !== null && typeof value === 'object';
+	}
+
+	public setPlayer(player: Model.Player)
     {
         this._player = player;
     }

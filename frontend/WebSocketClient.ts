@@ -42,6 +42,12 @@ class WebSocketClient
         this.pong();
     }
 */
+
+    public setMessageHandler(f:(e: any) => void):void
+    {
+        this._socket.onmessage = f;
+    }
+
     public send(message: string)
     {
         if (this._socket.readyState === 1){
@@ -51,19 +57,12 @@ class WebSocketClient
 
     public pong(): void
     {
-        console.log('pong');
-        console.log(this._socket);
-        console.log(this);
         if (!this._socket) {console.log('err 1', this._socket); return};
         if (this._socket.readyState === 0) {setTimeout(this.pong, 1000); return}
         if (this._socket.readyState !== 1) {console.log('err 2', this._socket); return};
         this._socket.send("heartbeat: " + this._playerName);
-        //setTimeout(() => {return this.pong()}, 1000);
+        setTimeout(() => {return this.pong()}, 30000);
     }
-
 }
-
-
-
 
 export {WebSocketClient};

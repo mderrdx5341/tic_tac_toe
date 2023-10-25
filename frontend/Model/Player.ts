@@ -2,18 +2,30 @@ class Player
 {
     private _id: number;
     private _name: string;
-    private _wings: number;
+    private _wins: number;
+    private _status: string
 
-    constructor(id: number, name: string, wings: number)
+    constructor(id: number, name: string, wins: number, status: string)
     {
         this._id = id;
         this._name = name;
-        this._wings = wings;
+        this._wins = wins;
+        this._status = status;
     }
 
     public name(): string
     {
         return this._name;
+    }
+
+    public wins(): number
+    {
+        return this._wins;
+    }
+
+    public status(): string
+    {
+        return this._status;
     }
 }
 

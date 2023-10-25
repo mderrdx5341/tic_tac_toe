@@ -20,7 +20,7 @@ class AuthForm
         button.innerHTML = 'Войти';
         html.addEventListener('submit', (e) => {
             e.preventDefault();
-            let player = new Model.Player(1, input.value, 0);
+            let player = new Model.Player(1, input.value, 0, 'fff');
             this._mediator.setPlayer(player);
             this._mediator.handleEvent('auth');
             return false;
