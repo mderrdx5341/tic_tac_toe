@@ -10,11 +10,11 @@ class Server
 {
     private $server;
     private $playersRepository;
-    private $playersOnline;
+    private $playersDBClient;
 
-    public function __construct($playersDB)
+    public function __construct($playersDBClient)
     {
-        $this->playersDB = $playersDB;
+        $this->playersDBClient = $playersDBClient;
         $this->playersRepository = new PlayersRepository();
         $this->server = new SwooleWebSocket("0.0.0.0", 9501);
         $this->server->set([
@@ -57,9 +57,8 @@ class Server
     private function init()
     {
         print("init\n");
-        $playersResponseDB = $this->playersDB->playerResponseDB();
+        $playersResponseDB = $this->playersDBClient->playerResponseDB();
         while($player = $playersResponseDB->fetch()) {
-            var_dump($player);
             $this->playersRepository->set(
                 (string) $player['name'],
                 [
