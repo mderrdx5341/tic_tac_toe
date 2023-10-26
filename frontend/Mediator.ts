@@ -23,6 +23,8 @@ class Mediator
         {  
             let authForm = new Views.AuthForm(this);
             this._mainPage.playerPanel().appendChild(authForm.build());
+			let gameBoard = new Views.GameBoard(this);
+			this._mainPage.gamePanel().appendChild(gameBoard.build());
         }
 
         if(event === 'auth')
